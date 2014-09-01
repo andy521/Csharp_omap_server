@@ -15,7 +15,8 @@ namespace Csharp_omap_server
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Fmain());
+            Fmain f1 = new Fmain();
+            Application.Run(f1);
         }
     }
 }

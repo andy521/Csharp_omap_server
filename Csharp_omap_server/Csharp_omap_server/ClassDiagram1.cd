@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Csharp_omap_server.Fmain" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>ASCQEYkAgGAIVBMSJKSONAAWEAgAAQhAIIAAASJJACE=</HashCode>
+      <FileName>Fmain.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csharp_omap_server.Control">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAgAAAAAAAAAAAAgAAAAAAAAAARQIAAAAAAAAEA=</HashCode>
+      <FileName>Control.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csharp_omap_server.Model">
+    <Position X="5.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAgAAAAAAAAAATAIBAAAAAAAAA=</HashCode>
+      <FileName>Model.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csharp_omap_server.Serial">
+    <Position X="2.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAEAAAAgAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Serial.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csharp_omap_server.View">
+    <Position X="9.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAQAAAAAAAAAAAAAAAAEQgAAAAARAIAAAAgAAACA=</HashCode>
+      <FileName>View.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csharp_omap_server.Conf">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Conf.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="微软雅黑" Size="9" />
+</ClassDiagram>
