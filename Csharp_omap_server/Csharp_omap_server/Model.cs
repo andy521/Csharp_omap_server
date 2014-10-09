@@ -9,8 +9,7 @@ using System.Data.SqlClient;
 using System.Data;
 using A1;
 
-using MathWorks.MATLAB.NET.Arrays;
-using MathWorks.MATLAB.NET.Utility;
+
 namespace Csharp_omap_server
 {
     /// <summary>
@@ -27,7 +26,6 @@ namespace Csharp_omap_server
             ListOfPorts.Clear();
             ListOfThread.Clear();
             f = f1;
-            MyClass = new CLass();
         }
         /// <summary>
         /// 保存配置
@@ -88,8 +86,9 @@ namespace Csharp_omap_server
                     else
                     {
                         s1.OpenPort(f1);
-                        ListOfPorts.Add(s1);
-                        return true;
+                        if (s1.MyPort.IsOpen)
+                            ListOfPorts.Add(s1);
+                        return s1.MyPort.IsOpen;
                     }                   
                 }
                 else
@@ -101,8 +100,9 @@ namespace Csharp_omap_server
             {
                 if (ListOfPorts.Count > 0)
                 {
+                    
                     foreach (Serial i in ListOfPorts)
-                    {
+                    {  
                         i.OpenPort();
                     }
                     return true;
@@ -179,7 +179,7 @@ namespace Csharp_omap_server
         Conf MyConf;
         SqlHelper MySqlHelper;
         Fmain f;
-        CLass MyClass;
+
 
         /// <summary>
         /// 删除串口
@@ -195,86 +195,20 @@ namespace Csharp_omap_server
                         ListOfPorts.RemoveAt(i);
                     }
         }
+       
         /// <summary>
-        /// 接收数据
+        /// 查询数据
         /// </summary>
-        /// <param name="MyModel"></param>
-        public void RecvData(Fmain f1,Model MyModel)
-        {
-            bool find = false;
-            if (f1.ForAllCheck.Checked == false)
-            {
-                foreach (Serial i in ListOfPorts)
-                    if (i.PortID == f1.PortID.Text)
-                    {
-                        i.OpenPort();
-                        find = true;
-                        break;
-                    }
-                if (!find)
-                {
-                    Serial s1 = new Serial(f1);
-                    if (f1.PortX.SelectedItem == null || f1.BaudX.SelectedItem == null ||
-                        f1.DataX.SelectedItem == null || f1.StopX.SelectedItem == null || f1.CheckX.SelectedItem == null)
-                    {
-                        MessageBox.Show("Config first", "Inform");
-                    }
-                    else
-                    {
-                        s1.OpenPort(f1);
-                        ListOfPorts.Add(s1);
-                    }
-                }          
-            }
-            else
-            {
-                if (ListOfPorts.Count > 0)
-                foreach (Serial i in ListOfPorts)
-                {
-                    i.OpenPort();
-
-                    }
-                 
-            }
-
-        }
-
-
-
-        public void QueryData(string PortID)
+        /// <param name="PortID"></param>
+        public void QueryData(string Portname)
         {
             foreach (Serial i in ListOfPorts)
             {
-                if ( i.PortID.Equals(PortID))
+                if ( i.MyPort.PortName.Equals(Portname))
                     MySqlHelper.QueryData(i.MyPort.PortName,f);
             }
         }
 
-        public void Anaylase()
-        {
-            Random ranobj = new Random();
-            int row = 26, col = 256,k=0;
-            double[,] CSoutput = new double[1, col];
-            double[,] CSinput = new double[row, col];
-
-            for (int i = 0; i < row; i++)
-                for (int j = 0; j < col; j++)
-                {
-                    //CSinput[i, j] = ranobj.Next(0, 255);
-                    CSinput[i, j] =  Convert.ToDouble(MySqlHelper.myds.Tables[0].Rows[k][1]);
-                    k++;
-                }
-            MWNumericArray mwin = CSinput;
-
-            try
-            {
-                CSoutput = (double[,])MyClass.xhcl(mwin).ToArray();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "ERROR");
-            }
-           
-        }
+        
     }
 }

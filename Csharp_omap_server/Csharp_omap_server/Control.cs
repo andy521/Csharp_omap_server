@@ -60,6 +60,7 @@ namespace Csharp_omap_server
                 if (MyModel.OpenPort(f.PortID.Text, f))
                 {
                     MyView.FlushListBox(ref MyModel);
+                    MyView.FlushX(true);
                 }
                 else 
                 {
@@ -81,6 +82,7 @@ namespace Csharp_omap_server
                 if (MyModel.ClosePort(f.PortID.Text, f))
                 {
                     MyView.FlushListBox(ref MyModel);
+                    MyView.FlushX(false);
                 }
                 else
                 {
@@ -116,16 +118,6 @@ namespace Csharp_omap_server
             MyView.FlushListBox(ref MyModel);
         }
         /// <summary>
-        /// 采集数据
-        /// </summary>
-        public void RecvData() 
-        {
-            MyModel.RecvData(f,MyModel);
-        }
-
-       
-    
-        /// <summary>
         /// 查询数据
         /// </summary>
         /// <param name="PortID"></param>
@@ -134,16 +126,16 @@ namespace Csharp_omap_server
             MyModel.QueryData(PortID);
         }
         /// <summary>
-        /// 分析算法
+        /// 激活串口
         /// </summary>
-        public void Anaylase()
+        public void ActivePort()
         {
-            MyModel.Anaylase();
-        }   
+            MyView.FlushX(false);
+        }
         /// <summary>
         /// 数据成员（视图操作类,事务操作类）
         /// </summary> 
-        View MyView;
+        public View MyView;
         public Model MyModel;
         Fmain f;
     }

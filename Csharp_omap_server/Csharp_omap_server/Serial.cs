@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO.Ports;
-using System.IO;
-using System.Windows.Forms;
 using System.Threading;
-using A1;
-using System.Data.SqlClient;
-using System.Data;
+using System.Windows.Forms;
 
 namespace Csharp_omap_server
 {
@@ -22,9 +15,12 @@ namespace Csharp_omap_server
         /// </summary>
         public Serial(Fmain f) 
         {
+            CSinput = new double[64];
+            sh1 = new SqlHelper();
             MyPort = new SerialPort();
             PortID = "";
-            MyPort.DataReceived += delegate(object sender ,SerialDataReceivedEventArgs e) { this.RecvData(f); };
+            MyPort.DataReceived += delegate(object sender, SerialDataReceivedEventArgs e) { this.RecvData(f); };
+            MyThread = new Thread(test);
         }
         /// <summary>
         /// （重载）串口初始化方法
@@ -145,8 +141,6 @@ namespace Csharp_omap_server
                 MessageBox.Show(e.ToString()+"Open faild" + "\n" + "1.Check config" + "\n"
                     + "2.Check device available" + "\n" + "3.Check device driver", "Error");
             }
-
-
         }
         /// <summary>
         /// 关闭串口方法
@@ -167,59 +161,43 @@ namespace Csharp_omap_server
         {
             if (!MyPort.IsOpen)
                 MyPort.Open();
-            try
-            {             
-                string text = string.Empty;
-                byte[] result = new byte[MyPort.BytesToRead];
-                MyPort.Read(result, 0, MyPort.BytesToRead);                
-                f1.DataBox.AppendText(System.Text.Encoding.ASCII.GetString(result)+"\n");
-                double a = Convert.ToDouble(System.Text.Encoding.ASCII.GetString(result));
-                InsertData(a);
-            }
-            catch (Exception err)
+            result = new byte[MyPort.BytesToRead];
+            //Sresult= MyPort.ReadExisting();
+            //MyPort.Read(result, 0, MyPort.BytesToRead);
+            //f1.DataBox.AppendText(System.Text.Encoding.ASCII.GetString(result)+ "\n");
+        
+            #region 读取
+            for (int i = 0; i < 64; i++)
             {
-                MessageBox.Show(err.Message);
-            }
-            
-        }
-
-        public void InsertData(double CSinput)
-        {
-
-            #region 插入数值
-            using (SqlConnection con = new SqlConnection(@"Data Source=5E9SKILDFCYGLBJ\SQL_L;Initial Catalog=Data;Integrated Security=True"))
-            {
-                SqlCommand cmd = new SqlCommand();
-                //设置命令对象执行sql语句时需要的连接对象
-                cmd.Connection = con;
-                //sql语句
-                cmd.CommandText = string.Format("insert {0} values(@record)",MyPort.PortName);
-                //为sql语句参数赋值
-                cmd.Parameters.Add("@record", SqlDbType.Float).Value =CSinput;
+                MyPort.Read(result, 0, MyPort.BytesToRead);
                 try
                 {
-                    //3.打开连接
-                    con.Open();
-                    //4.
-                    //执行sql语句
-                    int count = cmd.ExecuteNonQuery();
-                    ////5.关闭连接
-                    con.Close();
+                    CSinput[i] = Convert.ToDouble(System.Text.Encoding.ASCII.GetString(result));
                 }
-                catch (SqlException e)
+                catch (Exception e)
                 {
                     MessageBox.Show(e.ToString());
                 }
             }
             #endregion
+            //MyThread.Start();
+            test();
         }
-        
+        public void test()
+        {
+            sh1.InsertData(CSinput, MyPort.PortName, "Raw");
+            sh1.Anaylase(CSinput, MyPort.PortName.ToString());
+        }
         /// <summary>
         /// 数据成员
         /// </summary>
+        byte[] result;
+        string Sresult;
+        double[] CSinput = new double[64];
         public SerialPort MyPort ;
         public string PortID;
         public Thread MyThread;
+        SqlHelper sh1;
 
     }
 }

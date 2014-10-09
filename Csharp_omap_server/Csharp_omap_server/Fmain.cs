@@ -13,6 +13,7 @@ namespace Csharp_omap_server
     public partial class Fmain : Form
     {
         Control MyControl;
+        bool running = false;
 
         /// <summary>
         /// 初始化窗体
@@ -23,6 +24,7 @@ namespace Csharp_omap_server
             MyControl = new Control(this);
             CheckForIllegalCrossThreadCalls = false;
         }
+        
         /// <summary>
         /// 关闭所有成功连接的端口
         /// </summary>
@@ -32,6 +34,7 @@ namespace Csharp_omap_server
         {
             MyControl.Exit();
         }
+        
         /// <summary>
         /// 将内存中已打开的所有端口配置保存下来
         /// </summary>
@@ -41,6 +44,7 @@ namespace Csharp_omap_server
         {
             MyControl.SaveConf();
         }
+        
         /// <summary>
         /// 从文件加载端口配置信息
         /// </summary>
@@ -50,6 +54,7 @@ namespace Csharp_omap_server
         {
             MyControl.LoadConf();
         }
+        
         /// <summary>
         /// 关于开发者
         /// </summary>
@@ -57,8 +62,9 @@ namespace Csharp_omap_server
         /// <param name="e"></param>
         private void meToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("IODP" + "\n" + "zhangli" + "\n" + "Tel:18333648737" + "\n" + "Mail:zhangli2946@gmail.com", "About me");
+            MessageBox.Show( "\n" + "zhangli" + "\n" + "Tel:18333648737" + "\n" + "Mail:zhangli2946@gmail.com", "About me");
         }
+        
         /// <summary>
         /// 关于产品
         /// </summary>
@@ -66,8 +72,9 @@ namespace Csharp_omap_server
         /// <param name="e"></param>
         private void productToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("IOT508" + "\n" + "Ver 1.001" + "\n" + "Licence under LGPL" + "\n", "About me");
+            MessageBox.Show("\n" + "Ver 1.2" + "\n" , "About me");
         }
+        
         /// <summary>
         /// 打开串口
         /// </summary>
@@ -76,16 +83,9 @@ namespace Csharp_omap_server
         private void open_Click(object sender, EventArgs e)
         {
             MyControl.OpenPort();
+            
         }
-        /// <summary>
-        /// 激活串口数据侦听
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void recieve_Click(object sender, EventArgs e)
-        {
-            MyControl.RecvData();
-        }
+        
         /// <summary>
         /// 关闭串口
         /// </summary>
@@ -95,6 +95,7 @@ namespace Csharp_omap_server
         {
             MyControl.ClosePort();
         }
+        
         /// <summary>
         /// 激活一个串口
         /// </summary>
@@ -104,6 +105,7 @@ namespace Csharp_omap_server
         {            
             
         }
+        
         /// <summary>
         /// 标签2切换
         /// </summary>
@@ -114,6 +116,7 @@ namespace Csharp_omap_server
             TabPage t1 = (TabPage)sender;
             MyControl.SwitchTab(t1.Name.ToString());
         }
+        
         /// <summary>
         /// 删除串口
         /// </summary>
@@ -123,6 +126,7 @@ namespace Csharp_omap_server
         {
             MyControl.DelPort();
         }
+        
         /// <summary>
         /// 点选串口
         /// </summary>
@@ -133,7 +137,9 @@ namespace Csharp_omap_server
             ListBox s1 = (ListBox)sender;
             if(s1.SelectedItem!=null)
             MyControl.ActivePort(s1.SelectedItem.ToString());
+
         }
+        
         /// <summary>
         /// 标签3切换
         /// </summary>
@@ -144,6 +150,7 @@ namespace Csharp_omap_server
             TabPage t1 = (TabPage)sender;
             MyControl.SwitchTab(t1.Name.ToString());
         }
+        
         /// <summary>
         /// 刷新下拉控件
         /// </summary>
@@ -154,6 +161,7 @@ namespace Csharp_omap_server
             ComboBox s1 = (ComboBox)sender;
             MyControl.QueryData(s1.SelectedItem.ToString());
         }
+       
         /// <summary>
         /// 鼠标右键菜单（打开）
         /// </summary>
@@ -163,6 +171,7 @@ namespace Csharp_omap_server
         {
             MyControl.OpenPort();
         }
+        
         /// <summary>
         /// 鼠标右键菜单（关闭）
         /// </summary>
@@ -172,6 +181,7 @@ namespace Csharp_omap_server
         {
             MyControl.ClosePort();
         }
+        
         /// <summary>
         /// 刷新数据
         /// </summary>
@@ -182,10 +192,58 @@ namespace Csharp_omap_server
             string s1= this.DBSwitch.SelectedItem.ToString();
             MyControl.QueryData(s1);
         }
-
-        private void anaylase_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 控件控制
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PortID_ModifiedChanged(object sender, EventArgs e)
         {
-            MyControl.Anaylase();
+            MyControl.ActivePort();
         }
+        /// <summary>
+        /// 定时器方法
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {   
+            MyControl.MyView.flashchart(this.Channel.SelectedItem.ToString()+"Ret");
+        }
+
+        /// <summary>
+        /// 定时器触发
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBox1_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.CheckState == CheckState.Checked)
+            {
+                if (running)
+                {
+                    timer1.Interval = Convert.ToInt32(timerbox.Text.ToString());
+                    timer1.Start();
+                }
+                else
+                    MessageBox.Show("Set time !");
+            }
+            else
+            {
+                timer1.Stop();
+            }
+        }
+
+        /// <summary>
+        /// 切换通道
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Channel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string s1 = this.Channel.SelectedItem.ToString();
+            MyControl.MyView.flashchart(s1+"Ret");
+        }
+       
     }
 }
